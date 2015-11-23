@@ -15,7 +15,12 @@ public class InGameInterface : MonoBehaviour {
 	private GameObject PlayerObject;
 
 	public void OnClickSell(){
-
+		Destroy (LastFocusedSlot.refTower);
+		LastFocusedSlot.tower = Player_Board.e_tower.NONE;
+		LastFocusedSlot.color = Player_Board.e_color.NONE;
+		LastFocusedSlot.level = 0;
+		PlayerObject.GetComponent<Player_Board> ().SellTower (50);
+		changeMenuMode (e_InterfaceMode.IN_GAME);
 	}
 
 	public void OnCLickPutTower(int tower){

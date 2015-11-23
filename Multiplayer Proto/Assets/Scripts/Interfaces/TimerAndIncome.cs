@@ -17,7 +17,7 @@ public class TimerAndIncome : MonoBehaviour {
 	private Player_Board playerBoard;
 	private InGameInterface menu;
 	private bool isAlreadySentRequestMoney = false;
-	private float timeToIncome = 60.0f;
+	private float timeToIncome = 20.0f;
 
 	void Start(){
 		menu = GetComponent<InGameInterface> ();

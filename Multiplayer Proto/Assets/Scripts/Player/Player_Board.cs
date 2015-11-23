@@ -132,6 +132,11 @@ public class Player_Board: NetworkBehaviour {
 		}
 	}
 
+	public void SellTower(int value){
+		if (playerIdentity != null)
+			money += value;
+	}
+
 	[Client]
 	public void WannaPutTower(e_tower tower, t_infoSlot slot){
 		if (slot.tower == e_tower.NONE) {
@@ -176,8 +181,10 @@ public class Player_Board: NetworkBehaviour {
 		slot.refTower = newTowerObject;
 		FocusingSlot SlotScript = GameObject.Find(slot.player.ToString() + "-" + slot.id.ToString()).GetComponent<FocusingSlot>();
 		SlotScript.setInfos(slot);
+		if (playerIdentity != null)
+			money -= 100;
 	}
-
+	
 	[Client]
 	public void WannaEditColorTower(e_color newColor, t_infoSlot slot){
 		if (slot.color != newColor){
@@ -282,5 +289,4 @@ public class Player_Board: NetworkBehaviour {
 			money += incomeValue;
 		timers.ResetIncomeTime ();
 	}
-
 }
