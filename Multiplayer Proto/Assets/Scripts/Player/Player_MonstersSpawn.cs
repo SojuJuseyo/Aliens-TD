@@ -21,7 +21,14 @@ public class Player_MonstersSpawn : NetworkBehaviour {
 
 	[Client]
 	public void WannaCreateMob(MonstersSelection.e_enemy mob, Player_Board.e_player player){
-		CmdCreateMob (mob, player);
+		int money;
+		UpgradeMonsters.Stats monsterInfo = GameObject.Find ("Board").GetComponent<UpgradeMonsters> ().getNewStats (mob, 1);
+		money = GameObject.Find ("PlayerNetID : 1").GetComponent<Player_Board> ().money;
+		Debug.Log ("money = " + money);
+		Debug.Log ("cost = " + monsterInfo.cost);
+		if (monsterInfo.cost <= money) {
+			CmdCreateMob (mob, player);
+		}
 	}
 
 	[Command]
@@ -48,6 +55,7 @@ public class Player_MonstersSpawn : NetworkBehaviour {
 		else {
 			PopPosition = enemySpawn.transform.position;
 		}
+		UpgradeMonsters.Stats monsterInfo = GameObject.Find ("Board").GetComponent<UpgradeMonsters> ().getNewStats (mob, 1);
 		GameObject mobGO = new GameObject();
 		switch (mob) {
 		case MonstersSelection.e_enemy.MONSTER1:
@@ -80,6 +88,7 @@ public class Player_MonstersSpawn : NetworkBehaviour {
 		}
 		mobGO.GetComponent<Monster> ().setPlayerBoard (GetComponent<Player_ID> ().playerTeam);
 		mobGO.GetComponent<Monster> ().upgrade (1);
+		GameObject.Find ("PlayerNetID : 1").GetComponent<Player_Board> ().money -= monsterInfo.cost;
 	}
 
 	public void SetSeekerPlayer () {
