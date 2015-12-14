@@ -3,7 +3,7 @@ using System.Collections;
 
 public class MonstersSelection : MonoBehaviour {
 	
-	public enum e_enemy {NONE, STANDARD, SCOOT, HEAVY, AIR};
+	public enum e_enemy {NONE, MONSTER1, MONSTER2, MONSTER3, MONSTER4, MONSTER5, MONSTER6, MONSTER7, MONSTER8, MONSTER9};
 
 	private Player_MonstersSpawn PlayerMonsterScript;
 	private Player_Board.e_player playerTeam;

@@ -9,7 +9,7 @@ public class TimerAndIncome : MonoBehaviour {
 	public Text textTimeGame;
 	public Text textMoney;
 	public Text textIncomeValue;
-	public int incomeMoneyPerRound = 100;
+	public int incomeMoneyPerRound;
 
 	private DateTime start, end;
 	private float incomeTime;

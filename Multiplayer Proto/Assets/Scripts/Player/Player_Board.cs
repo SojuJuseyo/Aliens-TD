@@ -4,7 +4,7 @@ using UnityEngine.Networking;
 using System.Collections.Generic;
 
 public class Player_Board: NetworkBehaviour {
-
+	
 	//structure contenue sur chaque case de la board qui contient toutes les infos d'une case :
 	public struct t_infoSlot{
 		public int							id;
@@ -17,7 +17,7 @@ public class Player_Board: NetworkBehaviour {
 		public e_player						player;
 		public GameObject					refTower;
 	}
-
+	
 	//configuration des boards et variables éditeur :
 	public int LEN_BOARD_X;
 	public int LEN_BOARD_Y;
@@ -40,47 +40,63 @@ public class Player_Board: NetworkBehaviour {
 	public GameObject towerSplash;
 	public GameObject towerSniper;
 	public GameObject towerMelee;
-	public int money = 500;
+	public int money;
 	public TimerAndIncome timers;
-
+	
 	//infos :
 	public enum e_tower {NONE, STANDARD, GATLING, ANTIAIR, MELEE, SNIPER, SPLASH};
 	public enum e_color {NONE, RED, GREEN, BLUE};
 	public enum e_player {PLAYER1, PLAYER2};
 	public List<t_infoSlot> slotsListPlayer1 = new List<t_infoSlot>();
 	public List<t_infoSlot> slotsListPlayer2 = new List<t_infoSlot>();
-
+	
 	//environnement:
 	public Player_ID playerIdentity;
-
+	
 	private e_player playerTeam;
 	private GridController gridController;
-
+	
+	/*
+	 * dans monster spawn
+	 public void WannaCreateMob(Player_Board.e_monster mob, Player_Board.e_player player){
+		UpgradeMonsters.Stats info = GameObject.Find ("Board").GetComponent<UpgradeMonsters> ().getNewStats (mob, 1);
+		if (playerBoard.money >= info.cost) {
+			CmdCreateMob (mob, player);
+			GameObject.Find ("GameInterfaces").GetComponent<PopUpMessages>().DisplayMessage("you created a monster", 1);
+		}
+		else
+			GameObject.Find ("GameInterfaces").GetComponent<PopUpMessages>().DisplayMessage("Not enough money", 1);
+	}
+	*/
+	
 	void Start(){
 		timers = GameObject.Find ("GameInterfaces").GetComponent<TimerAndIncome> ();
+		gridController = GameObject.Find("GridController").GetComponent<GridController>();
+		
 	}
-
+	
 	public void CreateBoards(Player_ID ID){
 		if (isLocalPlayer) {
 			playerIdentity = ID;
 			playerTeam = playerIdentity.playerTeam;
 			createBoard (POS_BOARD1_X, POS_BOARD1_Y, LEN_BOARD_X, LEN_BOARD_Y, e_player.PLAYER1);
 			createBoard (POS_BOARD2_X, POS_BOARD2_Y, LEN_BOARD_X, LEN_BOARD_Y, e_player.PLAYER2);
-			GameObject obj = GameObject.Find("GridController");
-			gridController = obj.GetComponent<GridController>();
 		}
 	}
-
+	
 	public void initGridPathFinding(){
-		gridController.InitGridController(LEN_BOARD_X + 4, LEN_BOARD_Y + 4, new Vector3(POS_BOARD1_X + ((LEN_BOARD_X) / 2), 0, POS_BOARD1_Y + ((LEN_BOARD_Y) / 2)), new Vector3(POS_BOARD2_X + ((LEN_BOARD_X) / 2), 0, POS_BOARD2_Y + ((LEN_BOARD_Y) / 2)), mobSpawnCubeAllied, mobSpawnCubeEnemy, playerTeam);
+		gridController.InitGridController(LEN_BOARD_X, LEN_BOARD_Y,
+		                                  new Vector3(POS_BOARD1_X + ((LEN_BOARD_X) / 2) + 0.5f, 0, POS_BOARD1_Y + ((LEN_BOARD_Y) / 2) + 0.5f), 
+		                                  new Vector3(POS_BOARD2_X + ((LEN_BOARD_X) / 2) + 0.5f, 0, POS_BOARD2_Y + ((LEN_BOARD_Y) / 2) + 0.5f), 
+		                                  mobSpawnCubeAllied, mobSpawnCubeEnemy, playerTeam);
 	}
-
+	
 	[Client]
 	void createBoard(int x, int z, int dimx, int dimz, e_player player){
 		Vector3 tmpPos;
 		bool isSlot;
 		int id = 0;
-
+		
 		dimx += 2;
 		dimz += 2;
 		tmpPos.y = 0;
@@ -113,7 +129,7 @@ public class Player_Board: NetworkBehaviour {
 						else
 							objectSlot = Instantiate(borderObjectEnemy, tmpPos, Quaternion.identity) as GameObject;
 						objectSlot.transform.name = player.ToString() + "-Border";
-
+						
 					}
 					isSlot = false;
 				}
@@ -141,33 +157,54 @@ public class Player_Board: NetworkBehaviour {
 			}
 		}
 	}
-
-	public void SellTower(int value, t_infoSlot LastFocusedSlot){
+	
+	[Client]
+	public void WannaSellTower(int value, t_infoSlot slot){
 		if (playerIdentity != null) {
 			money += value;
-			Destroy (LastFocusedSlot.refTower);
-			LastFocusedSlot.tower = Player_Board.e_tower.NONE;
-			LastFocusedSlot.color = Player_Board.e_color.NONE;
-			LastFocusedSlot.level = 0;
-			//suppr une tour
+			CmdSellTower(slot);
 		}
 	}
-
+	
+	[Command]
+	void CmdSellTower(t_infoSlot slot){
+		RpcSellTower (slot);
+	}
+	
+	[ClientRpc]
+	void RpcSellTower(t_infoSlot slot){
+		slot = GameObject.Find (slot.player.ToString () + "-" + slot.id.ToString ()).GetComponent<FocusingSlot> ().getInfos ();
+		gridController.updateGraph (slot.refTower, false);
+		Destroy (slot.refTower);
+		slot.tower = Player_Board.e_tower.NONE;
+		slot.color = Player_Board.e_color.NONE;
+		slot.level = 0;
+		FocusingSlot SlotScript = GameObject.Find(slot.player.ToString() + "-" + slot.id.ToString()).GetComponent<FocusingSlot>();
+		SlotScript.setInfos(slot); 
+	}
+	
 	[Client]
 	public void WannaPutTower(e_tower tower, t_infoSlot slot){
-		if (slot.tower == e_tower.NONE) {
+		Upgrade.TurretInfos info = GameObject.Find ("Board").GetComponent<Upgrade> ().getNewStats (tower, Player_Board.e_color.NONE, 1);
+		Debug.Log("info.cost WannaPutTower = " + info.cost);
+		if (slot.tower == e_tower.NONE && info.cost <= money) {
 			slot.tower = tower;
-			CmdPutTower (tower, slot);
+			CmdPutTower (tower, slot, playerTeam);
+			GameObject.Find ("GameInterfaces").GetComponent<PopUpMessages>().DisplayMessage("you puted a " + slot.tower.ToString() + " tower");
 		}
+		else
+			GameObject.Find ("GameInterfaces").GetComponent<PopUpMessages>().DisplayMessage("you can't buy a " + slot.tower.ToString() + " tower");
 	}
-
+	
 	[Command]
-	void CmdPutTower(e_tower tower, t_infoSlot slot){
-		RpcPutTower(tower, slot);
+	void CmdPutTower(e_tower tower, t_infoSlot slot, e_player playerPlaying){
+		RpcPutTower(tower, slot, playerPlaying);
 	}
-
+	
 	[ClientRpc]
-	void RpcPutTower(e_tower tower, t_infoSlot slot){
+	void RpcPutTower(e_tower tower, t_infoSlot slot, e_player playerPlaying){
+		Upgrade.TurretInfos info = GameObject.Find ("Board").GetComponent<Upgrade> ().getNewStats (tower, Player_Board.e_color.NONE, 1);
+		Debug.Log("info.cost RpcPutTower = " + info.cost);
 		GameObject newTowerObject = new GameObject ();
 		Vector3 newPos = new Vector3 ();
 		newPos.x = slot.x;
@@ -193,13 +230,21 @@ public class Player_Board: NetworkBehaviour {
 			newTowerObject = Instantiate(towerSniper, newPos, Quaternion.identity) as GameObject;
 			break;
 		}
-		slot.tower = tower;
-		slot.refTower = newTowerObject;
-		FocusingSlot SlotScript = GameObject.Find(slot.player.ToString() + "-" + slot.id.ToString()).GetComponent<FocusingSlot>();
-		SlotScript.setInfos(slot);
-		if (playerIdentity != null)
-			money -= 100;
-		GameObject.Find ("GridController").GetComponent<GridController> ().updateGraph (slot.refTower);
+		if (!gridController.isTowerPutable (newTowerObject, playerPlaying)) {
+			GameObject.Destroy(newTowerObject);
+			return;
+		} else {
+			slot.tower = tower;
+			slot.refTower = newTowerObject;
+			FocusingSlot SlotScript = GameObject.Find (slot.player.ToString () + "-" + slot.id.ToString ()).GetComponent<FocusingSlot> ();
+			SlotScript.setInfos (slot);
+			newTowerObject.GetComponent<Tower> ().upgrade (Player_Board.e_color.NONE);
+			if (playerIdentity != null) {
+				money -= info.cost;
+				Debug.Log("info.cost RpcPutTower 2 = " + info.cost);
+			}
+			gridController.updateGraph (newTowerObject, true);
+		}
 	}
 	
 	[Client]
@@ -209,7 +254,7 @@ public class Player_Board: NetworkBehaviour {
 			CmdEditColorTower(slot);
 		}
 	}
-
+	
 	[Command]
 	void CmdEditColorTower(t_infoSlot slot){
 		RpcEditColorTower (slot);
@@ -225,7 +270,7 @@ public class Player_Board: NetworkBehaviour {
 		int children = slot.refTower.transform.childCount;
 		for (int i = 0; i < children; ++i){
 			switch (slot.color) {
-
+				
 			case e_color.RED:
 				tmpMaterial = slot.refTower.transform.GetChild(i).GetComponent<Renderer> ();
 				if (tmpMaterial)
@@ -254,45 +299,45 @@ public class Player_Board: NetworkBehaviour {
 				break;
 			}
 		}
-		slot.refTower.GetComponent<Tower> ().UpdateInfos (slot);
+		slot.refTower.GetComponent<Tower> ().upgrade (slot.color);
 		FocusingSlot SlotScript = GameObject.Find(slot.player.ToString() + "-" + slot.id.ToString()).GetComponent<FocusingSlot>();
 		SlotScript.setInfos(slot); 
 	}
-
+	
 	[Client]
 	public void WannaEditLevelUpTower(t_infoSlot slot){
 		slot.level++;
 		CmdEditLevelUpTower (slot);
 	}
-
+	
 	[Command]
 	void CmdEditLevelUpTower(t_infoSlot slot){
 		RpcEditLevelUpTower (slot);
 	}
-
+	
 	[ClientRpc]
 	void RpcEditLevelUpTower(t_infoSlot slot){
 		int newLevel = slot.level;
 		slot = GameObject.Find (slot.player.ToString () + "-" + slot.id.ToString ()).GetComponent<FocusingSlot> ().getInfos ();
 		slot.level = newLevel;
-
+		
 		//appliquer le grossisement ou les bailles de changement de niveau visuel du level up de la tour
-
-		slot.refTower.GetComponent<Tower> ().UpdateInfos (slot);
+		
+		slot.refTower.GetComponent<Tower> ().upgrade (slot.color);
 		FocusingSlot SlotScript = GameObject.Find(slot.player.ToString() + "-" + slot.id.ToString()).GetComponent<FocusingSlot>();
 		SlotScript.setInfos(slot);
 	}
-
+	
 	[Client]
 	public void wannaIncome(int incomeValue){
 		CmdIncome (incomeValue);
 	}
-
+	
 	[Command]
 	void CmdIncome(int incomeValue){
 		RpcIncome (incomeValue);
 	}
-
+	
 	[ClientRpc]
 	void RpcIncome(int incomeValue){
 		if (playerIdentity == null) {

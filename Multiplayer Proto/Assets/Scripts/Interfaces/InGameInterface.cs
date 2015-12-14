@@ -8,6 +8,10 @@ public class InGameInterface : MonoBehaviour {
 	public Canvas CanvasHUD;
 	public Canvas CanvasPutTower;
 	public Canvas CanvasEditTower;
+	public Button LevelUpButton;
+	public Button ColorRedButton;
+	public Button ColorGreenButton;
+	public Button ColorBlueButton;
 	public Player_Board.t_infoSlot LastFocusedSlot;
 	public Player_Board.e_player playerTeam;
 
@@ -19,7 +23,7 @@ public class InGameInterface : MonoBehaviour {
 	}
 
 	public void OnClickSell(){
-		PlayerObject.GetComponent<Player_Board> ().SellTower (50, LastFocusedSlot);
+		PlayerObject.GetComponent<Player_Board> ().WannaSellTower (50, LastFocusedSlot);
 		changeMenuMode (e_InterfaceMode.IN_GAME);
 	}
 
@@ -78,6 +82,7 @@ public class InGameInterface : MonoBehaviour {
 				case e_InterfaceMode.EDIT_TOWER :
 					CanvasPutTower.enabled = false;
 					CanvasEditTower.enabled = true;
+					UpdateEditInterface();
 					enableAllSlot(false);
 					break;
 			}
@@ -103,18 +108,32 @@ public class InGameInterface : MonoBehaviour {
 			ShortcutEditTower ();
 	}
 
+	private void UpdateEditInterface(){
+		if (LastFocusedSlot.color == Player_Board.e_color.NONE) {
+			LevelUpButton.interactable = false;
+			ColorRedButton.interactable = true;
+			ColorGreenButton.interactable = true;
+			ColorBlueButton.interactable = true;
+		}
+		else {
+			LevelUpButton.interactable = true;
+			ColorRedButton.interactable = false;
+			ColorGreenButton.interactable = false;
+			ColorBlueButton.interactable = false;
+		}
+	}
+
 	private void ShortcutEditTower(){
-		Debug.Log ("shortcut edit");
-		if (Input.GetButtonDown ("key1")) {
+		if (LastFocusedSlot.color != Player_Board.e_color.NONE && Input.GetButtonDown ("key1")) {
 			OnClickEditTowerLevelUp();
 		}
-		if (Input.GetButtonDown ("key2")) {
+		if (LastFocusedSlot.color == Player_Board.e_color.NONE && Input.GetButtonDown ("key2")) {
 			OnClickEditTowerColor(1);
 		}
-		if (Input.GetButtonDown ("key3")) {
+		if (LastFocusedSlot.color == Player_Board.e_color.NONE && Input.GetButtonDown ("key3")) {
 			OnClickEditTowerColor(2);
 		}
-		if (Input.GetButtonDown ("key4")) {
+		if (LastFocusedSlot.color == Player_Board.e_color.NONE && Input.GetButtonDown ("key4")) {
 			OnClickEditTowerColor(3);
 		}
 		if (Input.GetButtonDown ("key5")) {
@@ -126,7 +145,6 @@ public class InGameInterface : MonoBehaviour {
 	}
 
 	private void ShortcutPutTower(){
-		Debug.Log ("shortcut put");
 		if (Input.GetButtonDown ("key1")) {
 			OnCLickPutTower(1);
 		}

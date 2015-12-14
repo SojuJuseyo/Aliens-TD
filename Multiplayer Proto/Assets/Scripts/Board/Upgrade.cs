@@ -4,39 +4,51 @@ using System.Collections;
 public class Upgrade : MonoBehaviour
 {
     public double damage;
+    public int cost;
 
-    public double getNewStats(Player_Board.e_tower type, Player_Board.e_color color, int level)
+    public struct TurretInfos
     {
-        double newDamage;
+		public double damage;
+        public int cost;
+    }
+
+    public TurretInfos getNewStats(Player_Board.e_tower type, Player_Board.e_color color, int level)
+    {
+        TurretInfos turretInfos;
+
         switch (type)
         {
             case Player_Board.e_tower.STANDARD:
-                newDamage = standardTower(color, level);
+                turretInfos = standardTower(color, level);
                 break;
             case Player_Board.e_tower.ANTIAIR:
-                newDamage = antiaerialTower(color, level);
+                turretInfos = antiaerialTower(color, level);
                 break;
             case Player_Board.e_tower.GATLING:
-                newDamage = gatlingTower(color, level);
+                turretInfos = gatlingTower(color, level);
                 break;
             case Player_Board.e_tower.MELEE:
-                newDamage = meleeTower(color, level);
+                turretInfos = meleeTower(color, level);
                 break;
             case Player_Board.e_tower.SNIPER:
-                newDamage = sniperTower(color, level);
+                turretInfos = sniperTower(color, level);
                 break;
             case Player_Board.e_tower.SPLASH:
-                newDamage = mortarTower(color, level);
+                turretInfos = mortarTower(color, level);
                 break;
             default:
-                newDamage = damage;
+                turretInfos.damage = damage;
+                turretInfos.cost = cost;
                 break;
         }
-        return (newDamage);
+		Debug.Log ("turretInfos damage VERIF = " + turretInfos.damage);
+        return (turretInfos);
     }
 
-    double standardTower(Player_Board.e_color color, int level)
+    public TurretInfos standardTower(Player_Board.e_color color, int level)
     {
+        TurretInfos turretInfos;
+
         switch (color)
         {
             case Player_Board.e_color.BLUE:
@@ -44,15 +56,25 @@ public class Upgrade : MonoBehaviour
                 switch (level)
                 {
                         case 1:
-                            return (damage * 1.1);
+                            turretInfos.damage = damage * 1.1;
+                            turretInfos.cost = cost * 2;
+                            return (turretInfos);
                         case 2:
-                            return (damage * 1.2);
+                            turretInfos.damage = damage * 1.2;
+                            turretInfos.cost = cost * 4;
+                            return (turretInfos);
                         case 3:
-                            return (damage * 1.3);
+                            turretInfos.cost = cost * 8;
+                            turretInfos.damage = damage * 1.3;
+                            return (turretInfos);
                         case 4:
-                            return (damage * 1.4);
+                            turretInfos.damage = damage * 1.4;
+                            turretInfos.cost = cost * 16;
+                            return (turretInfos);
                         case 5:
-                            return (damage * 1.5);
+                            turretInfos.damage = damage * 1.5;
+                            turretInfos.cost = cost * 32;
+                            return (turretInfos);
                 }
                 break;
             }
@@ -61,15 +83,25 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 2;
+                            return (turretInfos);
                         case 2:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 4;
+                            return (turretInfos);
                         case 3:
-                            return (damage);
+                            turretInfos.cost = cost * 8;
+                            turretInfos.damage = damage;
+                            return (turretInfos);
                         case 4:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 16;
+                            return (turretInfos);
                         case 5:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 32;
+                            return (turretInfos);
                     }
                     break;
                 }
@@ -78,24 +110,40 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage * 1.25);
+                            turretInfos.damage = damage * 1.25;
+                            turretInfos.cost = cost * 2;
+                            return (turretInfos);
                         case 2:
-                            return (damage * 1.5);
+                            turretInfos.damage = damage * 1.5;
+                            turretInfos.cost = cost * 4;
+                            return (turretInfos);
                         case 3:
-                            return (damage * 1.75);
+                            turretInfos.damage = damage * 1.75;
+                            turretInfos.cost = cost * 8;
+                            return (turretInfos);
                         case 4:
-                            return (damage * 2);
+                            turretInfos.damage = damage * 2;
+                            turretInfos.cost = cost * 16;
+                            return (turretInfos);
                         case 5:
-                            return (damage * 3);
+                            turretInfos.damage = damage * 3;
+                            turretInfos.cost = cost * 32;
+                            return (turretInfos);
                     }
                     break;
                 }
         }
-        return (damage);
+		Debug.Log ("damage VERIF 1 = " + damage);
+        turretInfos.damage = damage;
+		Debug.Log ("damage VERIF 2 = " + damage);
+        turretInfos.cost = cost;
+        return (turretInfos);
     }
 
-    double antiaerialTower(Player_Board.e_color color, int level)
+    public TurretInfos antiaerialTower(Player_Board.e_color color, int level)
     {
+        TurretInfos turretInfos;
+
         switch (color)
         {
             case Player_Board.e_color.BLUE:
@@ -103,15 +151,25 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage * 1.1);
+                            turretInfos.damage = damage * 1.1;
+                            turretInfos.cost = cost * 4;
+                            return (turretInfos);
                         case 2:
-                            return (damage * 1.2);
+                            turretInfos.damage = damage * 1.2;
+                            turretInfos.cost = cost * 8;
+                            return (turretInfos);
                         case 3:
-                            return (damage * 1.3);
+                            turretInfos.cost = cost * 16;
+                            turretInfos.damage = damage * 1.3;
+                            return (turretInfos);
                         case 4:
-                            return (damage * 1.4);
+                            turretInfos.damage = damage * 1.4;
+                            turretInfos.cost = cost * 28;
+                            return (turretInfos);
                         case 5:
-                            return (damage * 1.5);
+                            turretInfos.damage = damage * 1.5;
+                            turretInfos.cost = cost * 40;
+                            return (turretInfos);
                     }
                     break;
                 }
@@ -120,15 +178,25 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 4;
+                            return (turretInfos);
                         case 2:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 8;
+                            return (turretInfos);
                         case 3:
-                            return (damage);
+                            turretInfos.cost = cost * 16;
+                            turretInfos.damage = damage;
+                            return (turretInfos);
                         case 4:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 28;
+                            return (turretInfos);
                         case 5:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 40;
+                            return (turretInfos);
                     }
                     break;
                 }
@@ -137,24 +205,39 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage * 1.25);
+                            turretInfos.damage = damage * 1.25;
+                            turretInfos.cost = cost * 4;
+                            return (turretInfos);
                         case 2:
-                            return (damage * 1.5);
+                            turretInfos.damage = damage * 1.5;
+                            turretInfos.cost = cost * 8;
+                            return (turretInfos);
                         case 3:
-                            return (damage * 1.75);
+                            turretInfos.damage = damage * 1.75;
+                            turretInfos.cost = cost * 16;
+                            return (turretInfos);
                         case 4:
-                            return (damage * 2);
+                            turretInfos.damage = damage * 2;
+                            turretInfos.cost = cost * 28;
+                            return (turretInfos);
                         case 5:
-                            return (damage * 3);
+                            turretInfos.damage = damage * 3;
+                            turretInfos.cost = cost * 40;
+                            return (turretInfos);
                     }
                     break;
                 }
         }
-        return (damage);
+
+        turretInfos.damage = damage;
+        turretInfos.cost = cost * 2;
+        return (turretInfos);
     }
 
-    double mortarTower(Player_Board.e_color color, int level)
+    public TurretInfos mortarTower(Player_Board.e_color color, int level)
     {
+        TurretInfos turretInfos;
+
         switch (color)
         {
             case Player_Board.e_color.BLUE:
@@ -162,15 +245,25 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage * 1.05);
+                            turretInfos.damage = damage * 1.05;
+                            turretInfos.cost = cost * 8;
+                            return (turretInfos);
                         case 2:
-                            return (damage * 1.1);
+                            turretInfos.damage = damage * 1.10;
+                            turretInfos.cost = cost * 16;
+                            return (turretInfos);
                         case 3:
-                            return (damage * 1.15);
+                            turretInfos.damage = damage * 1.15;
+                            turretInfos.cost = cost * 28;
+                            return (turretInfos);
                         case 4:
-                            return (damage * 1.2);
+                            turretInfos.damage = damage * 1.2;
+                            turretInfos.cost = cost * 40;
+                            return (turretInfos);
                         case 5:
-                            return (damage * 1.25);
+                            turretInfos.damage = damage * 1.25;
+                            turretInfos.cost = cost * 60;
+                            return (turretInfos);
                     }
                     break;
                 }
@@ -179,15 +272,25 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 8;
+                            return (turretInfos);
                         case 2:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 16;
+                            return (turretInfos);
                         case 3:
-                            return (damage);
+                            turretInfos.cost = cost * 28;
+                            turretInfos.damage = damage;
+                            return (turretInfos);
                         case 4:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 40;
+                            return (turretInfos);
                         case 5:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 60;
+                            return (turretInfos);
                     }
                     break;
                 }
@@ -196,24 +299,39 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage * 1.1);
+                            turretInfos.damage = damage * 1.1;
+                            turretInfos.cost = cost * 8;
+                            return (turretInfos);
                         case 2:
-                            return (damage * 1.2);
+                            turretInfos.damage = damage * 1.2;
+                            turretInfos.cost = cost * 16;
+                            return (turretInfos);
                         case 3:
-                            return (damage * 1.3);
+                            turretInfos.damage = damage * 1.3;
+                            turretInfos.cost = cost * 28;
+                            return (turretInfos);
                         case 4:
-                            return (damage * 1.5);
+                            turretInfos.damage = damage * 1.5;
+                            turretInfos.cost = cost * 40;
+                            return (turretInfos);
                         case 5:
-                            return (damage * 1.75);
+                            turretInfos.damage = damage * 1.75;
+                            turretInfos.cost = cost * 60;
+                            return (turretInfos);
                     }
                     break;
                 }
         }
-        return (damage);
+
+        turretInfos.damage = damage;
+        turretInfos.cost = cost * 4;
+        return (turretInfos);
     }
 
-    double meleeTower(Player_Board.e_color color, int level)
+    public TurretInfos meleeTower(Player_Board.e_color color, int level)
     {
+        TurretInfos turretInfos;
+
         switch (color)
         {
             case Player_Board.e_color.BLUE:
@@ -221,15 +339,25 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage * 1.1);
+                            turretInfos.damage = damage * 1.1;
+                            turretInfos.cost = cost * 4;
+                            return (turretInfos);
                         case 2:
-                            return (damage * 1.2);
+                            turretInfos.damage = damage * 1.2;
+                            turretInfos.cost = cost * 8;
+                            return (turretInfos);
                         case 3:
-                            return (damage * 1.3);
+                            turretInfos.cost = cost * 16;
+                            turretInfos.damage = damage * 1.3;
+                            return (turretInfos);
                         case 4:
-                            return (damage * 1.4);
+                            turretInfos.damage = damage * 1.4;
+                            turretInfos.cost = cost * 28;
+                            return (turretInfos);
                         case 5:
-                            return (damage * 1.5);
+                            turretInfos.damage = damage * 1.5;
+                            turretInfos.cost = cost * 40;
+                            return (turretInfos);
                     }
                     break;
                 }
@@ -238,15 +366,25 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 4;
+                            return (turretInfos);
                         case 2:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 8;
+                            return (turretInfos);
                         case 3:
-                            return (damage);
+                            turretInfos.cost = cost * 16;
+                            turretInfos.damage = damage;
+                            return (turretInfos);
                         case 4:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 28;
+                            return (turretInfos);
                         case 5:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 40;
+                            return (turretInfos);
                     }
                     break;
                 }
@@ -255,24 +393,39 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage * 1.25);
+                            turretInfos.damage = damage * 1.25;
+                            turretInfos.cost = cost * 4;
+                            return (turretInfos);
                         case 2:
-                            return (damage * 1.5);
+                            turretInfos.damage = damage * 1.5;
+                            turretInfos.cost = cost * 8;
+                            return (turretInfos);
                         case 3:
-                            return (damage * 1.75);
+                            turretInfos.damage = damage * 1.75;
+                            turretInfos.cost = cost * 16;
+                            return (turretInfos);
                         case 4:
-                            return (damage * 2);
+                            turretInfos.damage = damage * 2;
+                            turretInfos.cost = cost * 28;
+                            return (turretInfos);
                         case 5:
-                            return (damage * 3);
+                            turretInfos.damage = damage * 3;
+                            turretInfos.cost = cost * 40;
+                            return (turretInfos);
                     }
                     break;
                 }
         }
-        return (damage);
+
+        turretInfos.damage = damage;
+        turretInfos.cost = cost * 2;
+        return (turretInfos);
     }
 
-    double sniperTower(Player_Board.e_color color, int level)
+    public TurretInfos sniperTower(Player_Board.e_color color, int level)
     {
+        TurretInfos turretInfos;
+
         switch (color)
         {
             case Player_Board.e_color.BLUE:
@@ -280,15 +433,25 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage * 2.1);
+                            turretInfos.damage = damage * 2.1;
+                            turretInfos.cost = cost * 8;
+                            return (turretInfos);
                         case 2:
-                            return (damage * 2.2);
+                            turretInfos.damage = damage * 2.2;
+                            turretInfos.cost = cost * 16;
+                            return (turretInfos);
                         case 3:
-                            return (damage * 2.3);
+                            turretInfos.damage = damage * 2.3;
+                            turretInfos.cost = cost * 28;
+                            return (turretInfos);
                         case 4:
-                            return (damage * 2.4);
+                            turretInfos.damage = damage * 2.4;
+                            turretInfos.cost = cost * 40;
+                            return (turretInfos);
                         case 5:
-                            return (damage * 2.5);
+                            turretInfos.damage = damage * 2.5;
+                            turretInfos.cost = cost * 60;
+                            return (turretInfos);
                     }
                     break;
                 }
@@ -297,15 +460,25 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 8;
+                            return (turretInfos);
                         case 2:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 16;
+                            return (turretInfos);
                         case 3:
-                            return (damage);
+                            turretInfos.cost = cost * 28;
+                            turretInfos.damage = damage;
+                            return (turretInfos);
                         case 4:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 40;
+                            return (turretInfos);
                         case 5:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 60;
+                            return (turretInfos);
                     }
                     break;
                 }
@@ -314,24 +487,39 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage * 2.25);
+                            turretInfos.damage = damage * 2.25;
+                            turretInfos.cost = cost * 8;
+                            return (turretInfos);
                         case 2:
-                            return (damage * 2.5);
+                            turretInfos.damage = damage * 2.5;
+                            turretInfos.cost = cost * 16;
+                            return (turretInfos);
                         case 3:
-                            return (damage * 2.75);
+                            turretInfos.damage = damage * 2.75;
+                            turretInfos.cost = cost * 28;
+                            return (turretInfos);
                         case 4:
-                            return (damage * 3);
+                            turretInfos.damage = damage * 3;
+                            turretInfos.cost = cost * 40;
+                            return (turretInfos);
                         case 5:
-                            return (damage * 4);
+                            turretInfos.damage = damage * 4;
+                            turretInfos.cost = cost * 60;
+                            return (turretInfos);
                     }
                     break;
                 }
         }
-        return (damage * 2);
+
+        turretInfos.damage = damage * 2;
+        turretInfos.cost = cost * 4;
+        return (turretInfos);
     }
 
-    double gatlingTower(Player_Board.e_color color, int level)
+    public TurretInfos gatlingTower(Player_Board.e_color color, int level)
     {
+        TurretInfos turretInfos;
+
         switch (color)
         {
             case Player_Board.e_color.BLUE:
@@ -339,15 +527,25 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage * 0.45);
+                            turretInfos.damage = damage * 0.45;
+                            turretInfos.cost = cost * 6;
+                            return (turretInfos);
                         case 2:
-                            return (damage * 0.5);
+                            turretInfos.damage = damage * 0.5;
+                            turretInfos.cost = cost * 12;
+                            return (turretInfos);
                         case 3:
-                            return (damage * 0.55);
+                            turretInfos.damage = damage * 0.55;
+                            turretInfos.cost = cost * 24;
+                            return (turretInfos);
                         case 4:
-                            return (damage * 0.6);
+                            turretInfos.damage = damage * 0.6;
+                            turretInfos.cost = cost * 36;
+                            return (turretInfos);
                         case 5:
-                            return (damage * 0.65);
+                            turretInfos.damage = damage * 0.65;
+                            turretInfos.cost = cost * 50;
+                            return (turretInfos);
                     }
                     break;
                 }
@@ -356,15 +554,25 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 6;
+                            return (turretInfos);
                         case 2:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 12;
+                            return (turretInfos);
                         case 3:
-                            return (damage);
+                            turretInfos.cost = cost * 24;
+                            turretInfos.damage = damage;
+                            return (turretInfos);
                         case 4:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 36;
+                            return (turretInfos);
                         case 5:
-                            return (damage);
+                            turretInfos.damage = damage;
+                            turretInfos.cost = cost * 50;
+                            return (turretInfos);
                     }
                     break;
                 }
@@ -373,19 +581,32 @@ public class Upgrade : MonoBehaviour
                     switch (level)
                     {
                         case 1:
-                            return (damage * 0.55);
+                            turretInfos.damage = damage * 0.55;
+                            turretInfos.cost = cost * 6;
+                            return (turretInfos);
                         case 2:
-                            return (damage * 0.7);
+                            turretInfos.damage = damage * 0.7;
+                            turretInfos.cost = cost * 12;
+                            return (turretInfos);
                         case 3:
-                            return (damage * 0.85);
+                            turretInfos.damage = damage * 0.85;
+                            turretInfos.cost = cost * 24;
+                            return (turretInfos);
                         case 4:
-                            return (damage * 1);
+                            turretInfos.damage = damage * 1;
+                            turretInfos.cost = cost * 36;
+                            return (turretInfos);
                         case 5:
-                            return (damage * 1.25);
+                            turretInfos.damage = damage * 1.25;
+                            turretInfos.cost = cost * 50;
+                            return (turretInfos);
                     }
                     break;
                 }
         }
-        return (damage * 0.4);
+
+        turretInfos.damage = damage * 0.4;
+        turretInfos.cost = cost * 3;
+        return (turretInfos);
     }
 }

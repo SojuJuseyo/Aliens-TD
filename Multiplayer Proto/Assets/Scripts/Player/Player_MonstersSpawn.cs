@@ -4,10 +4,15 @@ using UnityEngine.Networking;
 
 public class Player_MonstersSpawn : NetworkBehaviour {
 
-	public GameObject enemyStandard;
-	public GameObject enemyScoot;
-	public GameObject enemyHeavy;
-	public GameObject enemyAir;
+	public GameObject monster1;
+	public GameObject monster2;
+	public GameObject monster3;
+	public GameObject monster4;
+	public GameObject monster5;
+	public GameObject monster6;
+	public GameObject monster7;
+	public GameObject monster8;
+	public GameObject monster9;
 
 	[HideInInspector]
 	public GameObject enemySpawn;
@@ -26,7 +31,7 @@ public class Player_MonstersSpawn : NetworkBehaviour {
 
 	[ClientRpc]
 	void RpcCreateMob(MonstersSelection.e_enemy mob, Player_Board.e_player player){
-		if (enemySpawn == null || myForceSpawn == null) {
+		if (enemySpawn == null || myForceSpawn == null){
 			Player_Board.e_player playerTeam = GetComponent<Player_ID> ().playerTeam;
 			enemySpawn = GameObject.Find(playerTeam.ToString() + "-MOBSPAWN");
 			if (playerTeam == Player_Board.e_player.PLAYER1){
@@ -45,20 +50,36 @@ public class Player_MonstersSpawn : NetworkBehaviour {
 		}
 		GameObject mobGO = new GameObject();
 		switch (mob) {
-		case MonstersSelection.e_enemy.STANDARD:
-			mobGO = Instantiate(enemyStandard, PopPosition , Quaternion.identity) as GameObject;
+		case MonstersSelection.e_enemy.MONSTER1:
+			mobGO = Instantiate(monster1, PopPosition , Quaternion.identity) as GameObject;
 			break;
-		case MonstersSelection.e_enemy.SCOOT:
-			mobGO = Instantiate(enemyScoot, PopPosition , Quaternion.identity) as GameObject;
+		case MonstersSelection.e_enemy.MONSTER2:
+			mobGO = Instantiate(monster2, PopPosition , Quaternion.identity) as GameObject;
 			break;
-		case MonstersSelection.e_enemy.HEAVY:
-			mobGO = Instantiate(enemyHeavy, PopPosition , Quaternion.identity) as GameObject;
+		case MonstersSelection.e_enemy.MONSTER3:
+			mobGO = Instantiate(monster3, PopPosition , Quaternion.identity) as GameObject;
 			break;
-		case MonstersSelection.e_enemy.AIR:
-			mobGO = Instantiate(enemyAir, PopPosition , Quaternion.identity) as GameObject;
+		case MonstersSelection.e_enemy.MONSTER4:
+			mobGO = Instantiate(monster4, PopPosition , Quaternion.identity) as GameObject;
+			break;
+		case MonstersSelection.e_enemy.MONSTER5:
+			mobGO = Instantiate(monster5, PopPosition , Quaternion.identity) as GameObject;
+			break;
+		case MonstersSelection.e_enemy.MONSTER6:
+			mobGO = Instantiate(monster6, PopPosition , Quaternion.identity) as GameObject;
+			break;
+		case MonstersSelection.e_enemy.MONSTER7:
+			mobGO = Instantiate(monster7, PopPosition , Quaternion.identity) as GameObject;
+			break;
+		case MonstersSelection.e_enemy.MONSTER8:
+			mobGO = Instantiate(monster8, PopPosition , Quaternion.identity) as GameObject;
+			break;
+		case MonstersSelection.e_enemy.MONSTER9:
+			mobGO = Instantiate(monster9, PopPosition , Quaternion.identity) as GameObject;
 			break;
 		}
 		mobGO.GetComponent<Monster> ().setPlayerBoard (GetComponent<Player_ID> ().playerTeam);
+		mobGO.GetComponent<Monster> ().upgrade (1);
 	}
 
 	public void SetSeekerPlayer () {
